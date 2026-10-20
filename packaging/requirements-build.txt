@@ -1,0 +1,5 @@
+# 打包专用依赖（运行时依赖见 ../requirements.txt）
+# PyInstaller 6.x 支持 Python 3.8+；构造出来的二进制里不含这些包本身
+pyinstaller>=6.10,<7
+# 生成应用图标（packaging/make-icons.py）；运行时也需要它画托盘图标
+pillow>=10.0

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  macOS 端（client）launchd 自启配置模板。
+  使用步骤：
+    1. 把下面两个 /Users/CHANGE_ME/quickswitch 替换成实际路径
+    2. cp com.quickswitch.agent.plist ~/Library/LaunchAgents/
+    3. launchctl load -w ~/Library/LaunchAgents/com.quickswitch.agent.plist
+    4. 查看日志：tail -f /tmp/quickswitch.out.log
+  卸载：launchctl unload -w ~/Library/LaunchAgents/com.quickswitch.agent.plist
+
+  说明：这是 LaunchAgent（Aqua 会话内运行），托盘图标才会出现；
+  若只用「系统设置 → 通用 → 登录项」添加脚本，效果等价且更简单。
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.quickswitch.agent</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/env</string>
+        <string>python3</string>
+        <string>/Users/CHANGE_ME/quickswitch/main.py</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/CHANGE_ME/quickswitch</string>
+    <key>LimitLoadToSessionType</key>
+    <string>Aqua</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/tmp/quickswitch.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/quickswitch.err.log</string>
+</dict>
+</plist>

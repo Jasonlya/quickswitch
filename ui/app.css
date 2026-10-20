@@ -1,0 +1,422 @@
+/* QuickSwitch 控制台 —— Swiss 锚点
+   米白底 #F7F7F8 与纯白面板、单一强调色 Yves Klein Blue #002FA7、
+   1px 发丝线骨架、12 栏可见栅格、左对齐排版、数字用等宽字形当构图元素。
+   不出现衬线、暖纸底、颗粒纹理与居中排版。 */
+
+:root {
+  --page: #F7F7F8;
+  --surface: #FFFFFF;
+  --ink: #111114;
+  --muted: #71717A;
+  --rule: #DCDCE0;
+  --rule-strong: #B6B6BD;
+  --accent: #002FA7;
+  --accent-ink: #FFFFFF;
+  --gutter: 24px;
+  --page-pad: 40px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: "Helvetica Neue", Helvetica, Inter, "Segoe UI", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, p, dl, dd, dt, figure { margin: 0; }
+
+.num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+code {
+  font-family: inherit;
+  font-size: 0.92em;
+  padding: 0 4px;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+}
+
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px var(--page-pad) 96px;
+}
+
+/* ---------------------------------------------------------------- 报头 */
+.masthead {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: var(--gutter);
+  align-items: end;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--ink);
+}
+
+.masthead-mark { grid-column: 1 / span 6; }
+
+.masthead h1 {
+  font-size: 52px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.masthead-note {
+  margin-top: 12px;
+  max-width: 42ch;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.masthead-meta {
+  grid-column: 7 / span 6;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px var(--gutter);
+}
+
+.masthead-meta dt {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.masthead-meta dd { font-size: 14px; }
+
+/* ---------------------------------------------------------------- 提示条 */
+.notice {
+  margin-top: 24px;
+  padding: 12px 16px;
+  border-left: 4px solid var(--accent);
+  background: var(--surface);
+  font-size: 13px;
+}
+
+.notice[data-tone="error"] { border-left-color: var(--ink); }
+
+/* ---------------------------------------------------------------- 章节 */
+.section {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: var(--gutter);
+  padding: 32px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.section-head { grid-column: 1 / span 3; }
+.section-body { grid-column: 4 / span 9; }
+
+.folio {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.section h2 {
+  margin-top: 4px;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.section-note {
+  margin-top: 8px;
+  max-width: 34ch;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* ---------------------------------------------------------------- 所有权转移条 */
+.ownership-ends {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--rule-strong);
+}
+
+.owner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  padding: 12px 16px 12px 16px;
+  border-right: 1px solid var(--rule);
+}
+
+.owner-right { border-right: 0; padding-left: 24px; }
+
+.owner-name { font-size: 15px; }
+.owner-host { grid-column: 1; font-size: 12px; color: var(--muted); }
+
+.owner-value {
+  grid-row: 1 / span 2;
+  font-size: 44px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--muted);
+  transition: color 220ms linear;
+}
+
+.owner[data-owner="true"] .owner-value { color: var(--accent); }
+.owner[data-owner="true"] .owner-name { font-weight: 500; }
+
+.rail {
+  position: relative;
+  height: 84px;
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-top: 0;
+  overflow: hidden;
+}
+
+.rail-columns {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to right, var(--rule) 0 1px, transparent 1px);
+  background-size: calc(100% / 12) 100%;
+}
+
+.rail-block {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  background: var(--accent);
+  transform: translateX(0);
+  transition: transform 420ms cubic-bezier(0.22, 0.61, 0.16, 1), opacity 160ms linear;
+}
+
+.rail[data-target="win"] .rail-block { transform: translateX(100%); }
+/* 读不到当前输入源时不显示归属：空的栅格本身就是「无归属」的表达，
+   比一块淡蓝更诚实（淡蓝会被读成「Mac 持有」）。 */
+.rail[data-live="false"] .rail-block { opacity: 0; }
+
+.rail[data-pending="true"] .rail-block {
+  background-image: repeating-linear-gradient(
+    135deg, var(--accent) 0 8px, #1B47C4 8px 16px
+  );
+}
+
+.ownership-state {
+  padding-top: 8px;
+  font-size: 13px;
+}
+
+/* ---------------------------------------------------------------- 操作 */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.action {
+  border: 1px solid var(--ink);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: inherit;
+  font-size: 14px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 120ms linear;
+}
+
+.action-quiet { background: var(--surface); color: var(--ink); }
+.action:hover { background: var(--ink); color: var(--surface); }
+.action-quiet:hover { background: var(--ink); }
+.action:disabled { opacity: 0.4; cursor: progress; }
+
+.field-inline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.field-inline label { font-size: 12px; color: var(--muted); }
+
+input[type="text"], input[type="number"], select, textarea {
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-radius: 0;
+  padding: 6px 8px;
+  min-width: 0;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  accent-color: var(--accent);
+}
+
+.field-inline input { width: 220px; }
+.hint { font-size: 12px; color: var(--muted); }
+
+.run-state {
+  margin-top: 16px;
+  padding-top: 8px;
+  border-top: 1px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+  min-height: 1.5em;
+}
+
+.run-state[data-busy="true"] { color: var(--accent); }
+
+/* ---------------------------------------------------------------- 键值表 */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--gutter); }
+
+.kv { border-top: 1px solid var(--rule); }
+
+.kv > div {
+  display: grid;
+  grid-template-columns: 16ch 1fr;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 13px;
+}
+
+.kv dt { color: var(--muted); }
+.kv dd { overflow-wrap: anywhere; }
+
+.dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  background: var(--rule-strong);
+  vertical-align: 1px;
+}
+
+.dot[data-on="true"] { background: var(--accent); }
+
+/* ---------------------------------------------------------------- 命令行 */
+.cmds { margin-top: 16px; border-top: 1px solid var(--rule); }
+
+.cmds > div {
+  display: grid;
+  grid-template-columns: 16ch 1fr;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 12px;
+}
+
+.cmds dt { color: var(--muted); }
+.cmds dd { margin: 0; overflow-wrap: anywhere; }
+.cmds dd.empty { color: var(--muted); }
+
+/* ---------------------------------------------------------------- 配置 */
+.config-groups { border-top: 1px solid var(--rule); }
+
+.config-group {
+  display: grid;
+  grid-template-columns: 12ch 1fr;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.config-group > h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.config-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px var(--gutter);
+}
+
+.config-field { display: grid; gap: 4px; }
+.config-field label { font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+.config-field input, .config-field select, .config-field textarea { width: 100%; }
+.config-field textarea { resize: vertical; min-height: 54px; }
+
+.config-field .flag {
+  font-size: 11px;
+  color: var(--accent);
+}
+
+.config-field[data-dirty="true"] label { color: var(--accent); }
+.config-field[data-dirty="true"] input,
+.config-field[data-dirty="true"] select,
+.config-field[data-dirty="true"] textarea { border-color: var(--accent); }
+
+.checkbox-field { display: flex; align-items: center; gap: 8px; }
+.checkbox-field input { width: auto; }
+
+/* ---------------------------------------------------------------- 事件 */
+.events {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.events th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--muted);
+  padding: 6px 12px 6px 0;
+  border-bottom: 1px solid var(--rule-strong);
+  white-space: nowrap;
+}
+
+.events td {
+  padding: 5px 12px 5px 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+
+.events td:last-child { overflow-wrap: anywhere; }
+.events td.lvl-WARNING, .events td.lvl-ERROR { color: var(--accent); font-weight: 500; }
+.events .empty { color: var(--muted); }
+
+/* ---------------------------------------------------------------- 页脚 */
+.footer {
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--gutter);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+@media (max-width: 900px) {
+  :root { --page-pad: 20px; }
+  .masthead { grid-template-columns: 1fr; row-gap: 16px; }
+  .masthead-mark, .masthead-meta { grid-column: 1 / -1; }
+  .section { grid-template-columns: 1fr; row-gap: 16px; }
+  .section-head, .section-body { grid-column: 1 / -1; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .config-group { grid-template-columns: 1fr; }
+  .config-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .footer { flex-direction: column; }
+}
+
+@media (max-width: 560px) {
+  .masthead h1 { font-size: 36px; }
+  .config-fields { grid-template-columns: 1fr; }
+  .owner-value { font-size: 32px; }
+}

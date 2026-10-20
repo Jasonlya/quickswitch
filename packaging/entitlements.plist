@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Hardened Runtime entitlements（公证要求开启 hardened runtime）。
+
+  这里刻意保持最小集合：QuickSwitch 只做 TCP/UDP、起子进程调用 DDC 工具、读写
+  ~/.quickswitch，不需要 JIT、不需要注入、不需要关掉库验证。
+  如果将来引入了需要额外权限的功能，再按需添加，别整包照抄网上的模板。
+-->
+<plist version="1.0">
+<dict>
+    <!-- 事件循环用 kqueue/select，不需要额外授权；此条用于说明「不做沙箱」 -->
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <false/>
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <false/>
+    <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+    <false/>
+</dict>
+</plist>

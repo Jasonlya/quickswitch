@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QuickSwitch 控制台</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="page">
+
+  <header class="masthead">
+    <div class="masthead-mark">
+      <h1>QuickSwitch</h1>
+      <p class="masthead-note">显示器输入源与键鼠控制权的一键切换。页面上的每个数字都来自本机运行中的进程。</p>
+    </div>
+    <dl class="masthead-meta">
+      <div><dt>主机</dt><dd id="metaHost">—</dd></div>
+      <div><dt>平台</dt><dd id="metaPlatform">—</dd></div>
+      <div><dt>本机版本</dt><dd id="metaVersion">—</dd></div>
+      <div><dt>采样时间</dt><dd id="metaSampled" class="num">—</dd></div>
+    </dl>
+  </header>
+
+  <div class="notice" id="notice" hidden></div>
+
+  <section class="section" id="ownership">
+    <div class="section-head">
+      <span class="folio num">01</span>
+      <h2>显示器所有权</h2>
+      <p class="section-note">蓝色块停在哪一侧，显示器信号源就在哪一侧。</p>
+    </div>
+    <div class="section-body">
+      <div class="ownership-ends">
+        <div class="owner" id="ownerMac">
+          <span class="owner-name">Mac</span>
+          <span class="owner-host" id="ownerMacHost">—</span>
+          <span class="owner-value num" id="ownerMacValue">—</span>
+        </div>
+        <div class="owner owner-right" id="ownerWin">
+          <span class="owner-name">Windows</span>
+          <span class="owner-host" id="ownerWinHost">—</span>
+          <span class="owner-value num" id="ownerWinValue">—</span>
+        </div>
+      </div>
+      <div class="rail" id="rail" data-target="mac" data-live="false" data-pending="false">
+        <div class="rail-columns"></div>
+        <div class="rail-block"></div>
+      </div>
+      <p class="ownership-state" id="ownershipState">读取不到当前输入源</p>
+    </div>
+  </section>
+
+  <section class="section" id="controls">
+    <div class="section-head">
+      <span class="folio num">02</span>
+      <h2>操作</h2>
+    </div>
+    <div class="section-body">
+      <div class="controls">
+        <button type="button" class="action" id="btnMac">切到 Mac</button>
+        <button type="button" class="action" id="btnWin">切到 Windows</button>
+        <button type="button" class="action action-quiet" id="btnRead">读取当前输入源</button>
+        <button type="button" class="action action-quiet" id="btnProbe">探测输入源</button>
+      </div>
+      <div class="field-inline">
+        <label for="probeCandidates">探测候选值</label>
+        <input type="text" id="probeCandidates" placeholder="—" autocomplete="off">
+        <span class="hint">留空使用内置候选集：<span id="probeDefault" class="num">—</span></span>
+      </div>
+      <p class="run-state" id="runState">空闲</p>
+    </div>
+  </section>
+
+  <section class="section" id="link">
+    <div class="section-head">
+      <span class="folio num">03</span>
+      <h2>连接</h2>
+    </div>
+    <div class="section-body">
+      <div class="grid-2">
+        <dl class="kv" id="kvLink"></dl>
+        <dl class="kv" id="kvFiles"></dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="ddc">
+    <div class="section-head">
+      <span class="folio num">04</span>
+      <h2>显示器 DDC</h2>
+      <p class="section-note">命令行按当前配置拼好，可直接复制到终端核对。</p>
+    </div>
+    <div class="section-body">
+      <dl class="kv" id="kvDdc"></dl>
+      <div class="cmds" id="cmds"></div>
+    </div>
+  </section>
+
+  <section class="section" id="hotkeys">
+    <div class="section-head">
+      <span class="folio num">05</span>
+      <h2>热键</h2>
+    </div>
+    <div class="section-body">
+      <dl class="kv" id="kvHotkeys"></dl>
+    </div>
+  </section>
+
+  <section class="section" id="config">
+    <div class="section-head">
+      <span class="folio num">06</span>
+      <h2>配置</h2>
+      <p class="section-note">只允许修改下列字段；其余字段请直接编辑配置文件。</p>
+    </div>
+    <div class="section-body">
+      <div class="config-groups" id="configGroups"></div>
+      <div class="controls">
+        <button type="button" class="action" id="btnSave">保存配置</button>
+        <button type="button" class="action action-quiet" id="btnRevert">放弃修改</button>
+      </div>
+      <p class="run-state" id="configState"></p>
+    </div>
+  </section>
+
+  <section class="section" id="events">
+    <div class="section-head">
+      <span class="folio num">07</span>
+      <h2>事件</h2>
+      <p class="section-note">运行中进程的日志尾部，倒序排列。</p>
+    </div>
+    <div class="section-body">
+      <table class="events">
+        <thead>
+          <tr><th class="num">时间</th><th>级别</th><th>来源</th><th>内容</th></tr>
+        </thead>
+        <tbody id="eventRows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>控制台只监听 127.0.0.1，令牌在地址栏的 <code>?t=</code> 里；关掉这个页面不影响后台运行。</p>
+    <p id="footerState">—</p>
+  </footer>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>
